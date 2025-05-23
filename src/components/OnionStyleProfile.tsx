@@ -26,6 +26,7 @@ interface ShootingStar {
   speed: number;
   starMesh: THREE.Mesh | null;
   trailMesh: THREE.Line | null;
+  glowMeshes?: THREE.Line[];
 }
 
 const AudioReactiveOrb: React.FC = () => {
@@ -42,10 +43,15 @@ const AudioReactiveOrb: React.FC = () => {
     // Scene setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      powerPreference: "high-performance",
+    });
 
     renderer.setSize(300, 300);
     renderer.setClearColor(0x000000, 0);
+    renderer.setPixelRatio(window.devicePixelRatio);
     mountRef.current.appendChild(renderer.domElement);
 
     // Invisible/transparent central orb
@@ -60,7 +66,7 @@ const AudioReactiveOrb: React.FC = () => {
     scene.add(orb);
 
     // Create fewer stars with smooth, flowing trails
-    const numStars = 8;
+    const numStars = 12;
     const shootingStars: ShootingStar[] = [];
 
     for (let i = 0; i < numStars; i++) {
@@ -78,28 +84,42 @@ const AudioReactiveOrb: React.FC = () => {
         phaseY: i * Math.PI * 0.5,
         phaseZ: i * Math.PI * 0.3,
         timeOffset: i * 1.2,
-        speed: 0.04 + Math.random() * .1 * 10,
+        speed: 0.04 + Math.random() * 0.1 * 10,
         starMesh: null,
         trailMesh: null,
       };
 
-      // Create the star
-      const starGeometry = new THREE.SphereGeometry(0.03, 8, 8);
+      // Create the star with glow
+      const starGeometry = new THREE.SphereGeometry(0.05, 16, 16);
       const starMaterial = new THREE.MeshBasicMaterial({
         color: 0x00ffff,
         transparent: true,
-        opacity: 0.9,
+        opacity: 1.0,
       });
       star.starMesh = new THREE.Mesh(starGeometry, starMaterial);
       scene.add(star.starMesh);
 
-      // Create trail geometry
-      const trailGeometry = new THREE.BufferGeometry();
-      const trailMaterial = new THREE.LineBasicMaterial({
+      // Add outer glow sphere
+      const glowGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+      const glowMaterial = new THREE.MeshBasicMaterial({
         color: 0x00aaff,
         transparent: true,
-        opacity: 0.7,
-        linewidth: 3,
+        opacity: 0.2,
+        blending: THREE.AdditiveBlending,
+      });
+      const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+      star.starMesh.add(glowSphere);
+
+      // Create trail geometry with glow effect
+      const trailGeometry = new THREE.BufferGeometry();
+
+      // Main trail with additive blending for glow
+      const trailMaterial = new THREE.LineBasicMaterial({
+        color: 0x00ffff,
+        transparent: true,
+        opacity: 0.9,
+        blending: THREE.AdditiveBlending,
+        linewidth: 1,
       });
 
       const trailPositions = new Float32Array(star.maxTrailLength * 3);
@@ -110,6 +130,32 @@ const AudioReactiveOrb: React.FC = () => {
 
       star.trailMesh = new THREE.Line(trailGeometry, trailMaterial);
       scene.add(star.trailMesh);
+
+      // Create additional glow layers
+      const glowLayers = 3;
+      for (let j = 0; j < glowLayers; j++) {
+        const glowGeometry = new THREE.BufferGeometry();
+        const glowPositions = new Float32Array(star.maxTrailLength * 3);
+        glowGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(glowPositions, 3)
+        );
+
+        const glowMaterial = new THREE.LineBasicMaterial({
+          color: j === 0 ? 0x00ffff : j === 1 ? 0x00aaff : 0x0066ff,
+          transparent: true,
+          opacity: 0.3 - j * 0.08,
+          blending: THREE.AdditiveBlending,
+          linewidth: 1,
+        });
+
+        const glowMesh = new THREE.Line(glowGeometry, glowMaterial);
+        scene.add(glowMesh);
+
+        // Store reference to glow mesh
+        if (!star.glowMeshes) star.glowMeshes = [];
+        star.glowMeshes.push(glowMesh);
+      }
 
       shootingStars.push(star);
     }
@@ -145,13 +191,22 @@ const AudioReactiveOrb: React.FC = () => {
         if (star.starMesh) {
           star.starMesh.position.copy(star.position);
 
-          (star.starMesh.material as THREE.MeshBasicMaterial).opacity = 0.8;
+          // Pulsing star glow
+          const pulse = 0.8 + Math.sin(time * 4 + star.phaseX) * 0.2;
+          (star.starMesh.material as THREE.MeshBasicMaterial).opacity = pulse;
           (star.starMesh.material as THREE.MeshBasicMaterial).color.setHSL(
-            0.55,
+            0.5 + Math.sin(time) * 0.05,
             0.9,
-            0.8
+            0.9
           );
-          star.starMesh.scale.setScalar(1.0);
+          star.starMesh.scale.setScalar(pulse);
+
+          // Update child glow sphere
+          if (star.starMesh.children[0]) {
+            star.starMesh.children[0].scale.setScalar(
+              1.2 + Math.sin(time * 3) * 0.3
+            );
+          }
         }
 
         // Update trails
@@ -169,6 +224,7 @@ const AudioReactiveOrb: React.FC = () => {
           }
         }
 
+        // Update main trail mesh
         if (star.trailMesh) {
           const positions = star.trailMesh.geometry.attributes.position
             .array as Float32Array;
@@ -187,12 +243,47 @@ const AudioReactiveOrb: React.FC = () => {
           }
           star.trailMesh.geometry.attributes.position.needsUpdate = true;
 
-          (star.trailMesh.material as THREE.MeshBasicMaterial).opacity = 0.5;
+          // Pulsing glow effect
+          const glowIntensity = 0.6 + Math.sin(time * 3 + star.phaseX) * 0.3;
+          (star.trailMesh.material as THREE.LineBasicMaterial).opacity =
+            glowIntensity;
           (star.trailMesh.material as THREE.LineBasicMaterial).color.setHSL(
-            0.55,
+            0.5 + Math.sin(time * 0.5) * 0.05,
             0.9,
-            0.7
+            0.8
           );
+        }
+
+        // Update glow layers with slight offset
+        if (star.glowMeshes) {
+          star.glowMeshes.forEach((glowMesh, glowIndex) => {
+            const positions = glowMesh.geometry.attributes.position
+              .array as Float32Array;
+            const offset = (glowIndex + 1) * 0.02;
+
+            for (let i = 0; i < star.maxTrailLength; i++) {
+              if (i < star.trail.length) {
+                const point = star.trail[i];
+                // Add slight offset to create thickness
+                positions[i * 3] =
+                  point.x + Math.sin(time * 2 + i * 0.1) * offset;
+                positions[i * 3 + 1] =
+                  point.y + Math.cos(time * 2 + i * 0.1) * offset;
+                positions[i * 3 + 2] = point.z;
+              } else {
+                const firstPoint = star.trail[0] || star.position;
+                positions[i * 3] = firstPoint.x;
+                positions[i * 3 + 1] = firstPoint.y;
+                positions[i * 3 + 2] = firstPoint.z;
+              }
+            }
+            glowMesh.geometry.attributes.position.needsUpdate = true;
+
+            // Fade opacity based on trail position
+            const baseOpacity = 0.3 - glowIndex * 0.08;
+            (glowMesh.material as THREE.LineBasicMaterial).opacity =
+              baseOpacity * (0.7 + Math.sin(time * 4 + star.phaseY) * 0.3);
+          });
         }
       });
 
@@ -224,10 +315,12 @@ const AudioReactiveOrb: React.FC = () => {
         className="w-[300px] h-[300px] rounded-full overflow-hidden"
         style={{
           background:
-            "radial-gradient(circle, rgba(0,170,255,0.03) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(0,170,255,0.15) 0%, rgba(0,100,200,0.05) 40%, transparent 70%)",
+          boxShadow:
+            "0 0 100px rgba(0,170,255,0.2), inset 0 0 50px rgba(0,170,255,0.1)",
         }}
       />
-      <div className="absolute inset-0 rounded-full border border-cyan-400/20"></div>
+      <div className="absolute inset-0 rounded-full border border-cyan-400/30"></div>
     </div>
   );
 };
@@ -365,7 +458,7 @@ const OnionStyleProfile: React.FC = () => {
             <h1 className="text-7xl lg:text-8xl font-black leading-tight text-stone-200 float">
               <div>Henry</div>
               <div>Barnett</div>
-              <div className="text-5xl">Full Stack Dev</div>
+              <div className="text-5xl italic opacity-80">Full Stack Dev</div>
             </h1>
           </div>
         </div>
