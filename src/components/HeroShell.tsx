@@ -8,7 +8,7 @@ import TimeDisplay from "./TimeDisplay";
 const HeroShell = ({ loaded }: { loaded: boolean }) => {
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
 
-  const parallaxMultiplier = -2.5;
+  const parallaxMultiplier = 2.5;
 
   const parallaxStyle = {
     transform: `
