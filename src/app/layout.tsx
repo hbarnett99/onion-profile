@@ -8,8 +8,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata = {
-  title: "Onion Creative Studio Clone",
-  description: "A beautiful creative studio website",
+  title: "Henry Barnett - Dev. Profile",
+  description: "A full stack developer's portfolio for a simple guy.",
 };
 
 export default function RootLayout({

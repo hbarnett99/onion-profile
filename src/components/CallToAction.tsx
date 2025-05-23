@@ -14,11 +14,11 @@ const CallToAction: React.FC<CallToActionProps> = ({ loaded }) => {
       }`}
     >
       <div className="text-right space-y-2">
-        <div className="text-lg font-mono">LETS TALK SOON</div>
+        <div className="text-lg font-mono">LETS TALK.</div>
         <div className="text-sm opacity-70 max-w-48">
-          UNDER CONSTRUCTION
+          UNDER CONSTRUCTION.
           <br />
-          <div className="text-xs opacity-70">SEE YOU SOON</div>
+          <div className="text-xs opacity-70">SEE YOU SOON.</div>
         </div>
       </div>
     </div>
