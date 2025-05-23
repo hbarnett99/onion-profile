@@ -22,7 +22,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ loaded }) => {
         <h1 className="text-7xl lg:text-8xl font-black leading-tight text-stone-200 float">
           <div>Henry</div>
           <div>Barnett</div>
-          <div className="text-5xl italic opacity-80">Full Stack Dev</div>
+          <div className="text-5xl italic opacity-80">Full Stack Dev.</div>
         </h1>
       </div>
       {/* Main Tagline - Top Right */}
