@@ -10,13 +10,13 @@ const Header: React.FC<HeaderProps> = ({ loaded }) => {
   return (
     <>
       {/* Top Corner Elements */}
-      <div className="absolute top-8 right-12 lg:right-24">
+      <div className="absolute right-12 lg:right-24">
         <div
           className={`text-sm font-mono opacity-60 transform transition-all duration-1500 ${
             loaded ? "translate-y-0 opacity-60" : "translate-y-5 opacity-0"
           }`}
         >
-          (IG,X,LI,AWWW)
+          {/* Kooyong Yacht Club */}
         </div>
       </div>
 
@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({ loaded }) => {
           }`}
         >
           <div className="text-sm tracking-wider font-light opacity-70 mb-2">
-            onion studio
+            {/* Kooyong Yacht Club */}
           </div>
         </div>
       </div>

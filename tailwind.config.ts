@@ -12,6 +12,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        'pp-neue-machina': ['"PP Neue Machina"', 'sans-serif'],
+        'space-mono': ['var(--font-space-mono)', 'monospace'],
+      },
     },
   },
   plugins: [],

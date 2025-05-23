@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import ScrollingMarquee from "./ScrollingMarquee";
-import CustomCursor from "./CustomCursor";
-import TimeDisplay from "./TimeDisplay";
-import HeroSection from "./HeroSection";
-import CallToAction from "./CallToAction";
-import FloatingElements from "./FloatingElements";
+import { useEffect, useState } from "react";
+import AudioReactiveOrb from "./AudioReactiveOrb";
 import CornerAccents from "./CornerAccents";
-import Header from "./Header";
+import CustomCursor from "./CustomCursor";
+import FloatingElements from "./FloatingElements";
+import HeroShell from "./HeroShell";
+import ScrollingMarquee from "./ScrollingMarquee";
 
-const OnionStyleProfile: React.FC = () => {
+const OnionStyleProfile = () => {
   const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -19,39 +17,38 @@ const OnionStyleProfile: React.FC = () => {
   }, []);
 
   const topScrollingTexts = [
-    "FULL SITE IS COOKIN...BRING TISSUES",
-    "DESIGN SO GOOD IT MAKES YOU CRY",
-    "CREATIVE STUDIO EXTRAORDINAIRE",
-    "BRANDING THAT HITS DIFFERENT",
+    "FULL SITE UNDER CONSTRUCTION",
+    "BUT DON'T WORRY, I'M STILL HERE",
+    "WE'LL SEE EACH OTHER SOON",
   ];
 
   const bottomScrollingTexts = [
-    "FRONT END • BACK END • FULL STACK • ELECTRONIC MUSICIAN",
+    "EVIDENTLY, I NEED A DESIGNER",
+    "I'M A DEVELOPER",
   ];
 
   return (
-    <div className="h-screen w-full bg-gray-900 text-stone-200 overflow-hidden relative cursor-none">
+    <div className="h-dvh w-full bg-gray-900 text-stone-200 overflow-hidden relative cursor-none ">
       {/* Scrolling Text at Top */}
       <ScrollingMarquee
         texts={topScrollingTexts}
+        ends={{ prefix: "🚧", suffix: "🚧" }}
         position="top"
         className={`transition-all duration-1000 ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
       />
 
-      {/* Main Content Container */}
-      <div className="relative z-10 h-full flex flex-col justify-between p-12 pt-16 max-w-7xl mx-auto">
-        {/* Header */}
-        <Header loaded={loaded} />
-
-        {/* Center Hero Section */}
-        <HeroSection loaded={loaded} />
-
-        {/* Bottom Section */}
-        <div className="flex justify-between items-end">
-          <TimeDisplay loaded={loaded} />
-          <CallToAction loaded={loaded} />
+      {/* Hero Section */}
+      <HeroShell loaded={loaded} />
+      {/* Flowing Light Orb */}
+      <div className="absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div
+          className={`transform transition-all duration-2000 delay-800 ${
+            loaded ? "scale-100 opacity-100" : "scale-0 opacity-0"
+          }`}
+        >
+          <AudioReactiveOrb />
         </div>
       </div>
 

@@ -1,4 +1,11 @@
 import "./globals.css";
+import { Space_Mono } from "next/font/google";
+
+const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
+});
 
 export const metadata = {
   title: "Onion Creative Studio Clone",
@@ -11,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={spaceMono.variable}>
       <body>{children}</body>
     </html>
   );

@@ -4,6 +4,7 @@ import React from "react";
 
 interface ScrollingMarqueeProps {
   texts: string[];
+  ends?: { prefix: string; suffix: string };
   direction?: "normal" | "reverse";
   speed?: string;
   className?: string;
@@ -12,6 +13,7 @@ interface ScrollingMarqueeProps {
 
 const ScrollingMarquee: React.FC<ScrollingMarqueeProps> = ({
   texts,
+  ends,
   direction = "normal",
   speed = "15s",
   className = "",
@@ -38,7 +40,7 @@ const ScrollingMarquee: React.FC<ScrollingMarqueeProps> = ({
         className={`marquee ${textClass} whitespace-nowrap ${className}`}
         style={marqueeStyle}
       >
-        {texts.join(" • ")} • {texts.join(" • ")}
+        {ends?.prefix} {texts.join(" • ")} • {texts.join(" • ")} {ends?.suffix}
       </div>
     </div>
   );
