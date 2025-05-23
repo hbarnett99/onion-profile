@@ -40,7 +40,7 @@ const HeroShell = ({ loaded }: { loaded: boolean }) => {
         <div style={parallaxStyle}>
           <HeroSection loaded={loaded} />
         </div>
-        <GradientMesh2 />
+        <GradientMesh2 loaded={loaded} />
       </div>
       {/* Bottom Section */}
       <div className="flex justify-between items-end">

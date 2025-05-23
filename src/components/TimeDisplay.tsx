@@ -28,7 +28,7 @@ const TimeDisplay: React.FC<TimeDisplayProps> = ({ loaded }) => {
   return (
     <div
       className={`transform transition-all duration-1500 delay-1200 ${
-        loaded ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
+        loaded ? "translate-y-0 opacity-50" : "translate-y-5 opacity-0"
       }`}
     >
       <div className="text-4xl font-mono font-bold">

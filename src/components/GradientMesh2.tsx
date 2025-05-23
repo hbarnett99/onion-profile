@@ -29,16 +29,20 @@ const constCSS = `
 }
 `;
 
-const GradientMesh2 = () => {
-const className = "gradient-mesh2-root h-full w-full float-2";
+const GradientMesh2 = ({ loaded }: { loaded: boolean }) => {
+  const className = "gradient-mesh2-root h-full w-full float-2";
 
   return (
-    <div className="absolute inset-0 z-[-1] h-[196px] w-[384px] left-[-180px] top-[40%] sm:left-[-90px]">
+    <div
+      className={`absolute inset-0 z-[-1] h-[196px] w-[384px] left-[-180px] top-[40%] sm:left-[-90px]
+        transform transition-all duration-600 delay-800
+        ${loaded ? "translate-y-0 opacity-100" : "translate-y-24 opacity-0"}`}
+    >
       <div className={className}>
         <style>{constCSS}</style>
         <div className="noise" />
       </div>
     </div>
   );
-}
+};
 export default GradientMesh2;

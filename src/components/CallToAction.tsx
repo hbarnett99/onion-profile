@@ -10,7 +10,7 @@ const CallToAction: React.FC<CallToActionProps> = ({ loaded }) => {
   return (
     <div
       className={`transform transition-all duration-1500 delay-1500 ${
-        loaded ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
+        loaded ? "translate-y-0 opacity-70" : "translate-y-5 opacity-0"
       }`}
     >
       <div className="text-right space-y-2">
