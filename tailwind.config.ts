@@ -13,6 +13,7 @@ export default {
         foreground: "var(--foreground)",
       },
       fontFamily: {
+        'poppins': ['var(--font-poppins)', 'monospace'],
         'pp-neue-machina': ['"PP Neue Machina"', 'sans-serif'],
         'space-mono': ['var(--font-space-mono)', 'monospace'],
       },
