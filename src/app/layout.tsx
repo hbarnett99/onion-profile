@@ -1,12 +1,12 @@
 import "./globals.css";
-import { Space_Mono } from "next/font/google";
+// import { Space_Mono } from "next/font/google";
 import { Poppins } from "next/font/google";
 
-const spaceMono = Space_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-space-mono",
-});
+// const spaceMono = Space_Mono({
+//   subsets: ["latin"],
+//   weight: ["400", "700"],
+//   variable: "--font-space-mono",
+// });
 
 const poppins = Poppins({
   subsets: ["latin"],
